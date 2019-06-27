@@ -9,6 +9,7 @@ import { html } from "./html";
 import { isContent } from "../../is-content";
 
 const AggregateError = require("aggregate-error");
+const profiler = require("../../../../../tools/profiler")(__filename);
 
 const BUNDLE_PATH = "/patternplate.node.components.js";
 const RENDER_PATH = "/patternplate.node.render.js";
@@ -22,10 +23,12 @@ export const demo = async function demo(options: T.RouteOptions): Promise<expres
       const id = req.params[0];
 
       // TODO: Send errors to central observer
+      profiler.pStart("loadMeta");
       const { patterns } = await loadMeta({
         cwd,
         entry
       });
+      profiler.pEnd();
 
       const found = patterns.find(pattern => pattern.id === id);
 
